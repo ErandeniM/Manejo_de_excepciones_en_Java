@@ -213,7 +213,13 @@ try {
 
 ¿Por qué sería incorrecto invertir el orden anterior?
 
+Sería incorrecto porque NumberFormatException es una subclase de IllegalArgumentException, según la jerarquía Throwable → Exception → RuntimeException → IllegalArgumentException → NumberFormatException. Esto significa que toda NumberFormatException es también una IllegalArgumentException, pero no a la inversa.
 
+Java evalúa los bloques catch en orden descendente y ejecuta el primero cuyo tipo sea compatible con la excepción lanzada. Si IllegalArgumentException se colocara primero, capturaría también los errores de formato numérico por ser un caso particular suyo, y el bloque de NumberFormatException quedaría como código inalcanzable. Se perdería así el mensaje específico y la capacidad de distinguir entre un dato no numérico y una calificación fuera de rango.
+
+El compilador de Java impide esta situación: la compilación falla con el mensaje error: exception NumberFormatException has already been caught. No se trata de un error en tiempo de ejecución ni de una mala práctica de estilo, sino de un error que impide construir el programa.
+
+Por esta razón, los bloques catch deben ordenarse siempre de la excepción más específica a la más general.
 # **Parte IV. `finally`**
 
 ## **8\. Agregar limpieza de recursos**

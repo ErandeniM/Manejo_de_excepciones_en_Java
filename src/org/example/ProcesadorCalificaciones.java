@@ -1,28 +1,54 @@
 package org.example;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class ProcesadorCalificaciones {
     public static void main(String[] args) throws IOException {
 
-        BufferedReader lector =
-                new BufferedReader(
-                        new FileReader("calificaciones.txt")
-                );
+        try {
+            BufferedReader lector =
+                    new BufferedReader(
+                            new FileReader("calificaciones.txt")
+                    );
 
-        String linea;
+            String linea;
 
-        while ((linea = lector.readLine()) != null) {
-            try {
-                int calificacion = Integer.parseInt(linea);
-                System.out.println(calificacion);
-            } catch (NumberFormatException e) {
-                System.out.println("Valor inválido: " + linea);
+            while ((linea = lector.readLine()) != null) {
+
+                try {
+                    int calificacion = Integer.parseInt(linea.trim());
+
+                    validarCalificacion(calificacion);
+
+                    System.out.println("Calificación válida: " + calificacion);
+
+                } catch (NumberFormatException e) {
+                    System.err.println(
+                            "Formato numérico inválido: " + e.getMessage()
+                    );
+
+                } catch (IllegalArgumentException e) {
+                    System.err.println(
+                            "Argumento inválido: " + e.getMessage()
+                    );
+                }
             }
-        }
 
-        lector.close();
+            lector.close();
+
+        } catch (FileNotFoundException e) {
+            System.err.println("No se encontró el archivo.");
+        }
+    }
+
+    public static void validarCalificacion(int calificacion) {
+        if (calificacion < 0 || calificacion > 100) {
+            throw new IllegalArgumentException(
+                    "La calificación debe estar entre 0 y 100: " + calificacion
+            );
+        }
     }
 }
