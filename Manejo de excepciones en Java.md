@@ -142,15 +142,17 @@ Completar:
 
 | Aspecto | Sin manejo | Con manejo |
 | ----- | ----- | ----- |
-| ¿Termina el programa? |  |  |
-| ¿Se muestra el error? |  |  |
-| ¿Se procesan las líneas posteriores? |  |  |
-| ¿Puede recuperarse el programa? |  |  |
+| ¿Termina el programa? |Sí, abruptamente al encontrar abc; sale con código 1  | No, completa la lectura del archivo y termina normalmente (código 0) |
+| ¿Se muestra el error? | 	Sí, pero como stack trace de NumberFormatException en la salida de error, sin contexto de negocio | Sí, con un mensaje controlado y legible: Valor inválido: abc |
+| ¿Se procesan las líneas posteriores? | No; el 75 nunca se lee | Sí; el ciclo continúa y procesa 75 |
+| ¿Puede recuperarse el programa? | No; la JVM interrumpe el hilo main | Sí; descarta la línea defectuosa y sigue con la siguiente iteración |
 
 ### **Reflexión**
 
 ¿Qué ventaja proporciona capturar una excepción que el programa puede anticipar?
+Capturar una excepción anticipable convierte un fallo fatal en una condición de datos manejable. Que una línea traiga abc no es una falla del programa: es un dato sucio, algo perfectamente previsible en un archivo de calificaciones. Sin manejo, un solo carácter incorrecto invalida el procesamiento completo y las 200 líneas siguientes se pierden aunque fueran válidas.
 
+Con el try-catch el programa distingue entre lo que puede resolver y lo que no. Aísla el error al ámbito donde ocurrió —una iteración— y conserva el trabajo ya hecho, lo que permite calcular el promedio con los datos aprovechables. Además el mensaje deja de ser un volcado técnico y pasa a ser información útil: se sabe qué línea se descartó y por qué, sin exponer detalles internos de la implementación.
 
 # **Parte III. Múltiples excepciones**
 

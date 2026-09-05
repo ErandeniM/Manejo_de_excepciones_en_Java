@@ -8,15 +8,19 @@ public class ProcesadorCalificaciones {
     public static void main(String[] args) throws IOException {
 
         BufferedReader lector =
-        new BufferedReader(
-                new FileReader("calificaciones.txt")
-        );
+                new BufferedReader(
+                        new FileReader("calificaciones.txt")
+                );
 
         String linea;
 
         while ((linea = lector.readLine()) != null) {
-            int calificacion = Integer.parseInt(linea);
-            System.out.println(calificacion);
+            try {
+                int calificacion = Integer.parseInt(linea);
+                System.out.println(calificacion);
+            } catch (NumberFormatException e) {
+                System.out.println("Valor inválido: " + linea);
+            }
         }
 
         lector.close();
