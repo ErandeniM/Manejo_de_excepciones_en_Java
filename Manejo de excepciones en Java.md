@@ -715,19 +715,50 @@ Cada estudiante entregar:
 
 # **21\. Preguntas de reflexión**
 
-1. ¿Qué diferencia existe entre lanzar y capturar una excepción?  
-2. ¿Qué función tiene `try`?  
-3. ¿Qué función tiene `catch`?  
-4. ¿Cuándo resulta útil `finally`?  
-5. ¿Qué ventaja tiene `try-with-resources`?  
-6. ¿Cuál es la diferencia entre `throw` y `throws`?  
-7. ¿Por qué conviene utilizar excepciones específicas?  
-8. ¿Cuándo tiene sentido crear una excepción personalizada?  
-9. ¿Por qué no se recomienda capturar `Throwable`?  
-10. ¿Qué efecto tiene ignorar una excepción?  
-11. ¿Qué información debería proporcionar un buen mensaje de excepción?  
-12. ¿En qué casos conviene propagar una excepción en lugar de capturarla inmediatamente?
+1. ¿Qué diferencia existe entre lanzar y capturar una excepción?
 
+Lanzar consiste en crear un objeto de excepción y entregarlo al runtime para señalar que ocurrió una condición anómala; interrumpe el flujo normal y transfiere el control hacia arriba en la pila de llamadas. Capturar es interceptar esa excepción para decidir qué hacer con ella. Son los dos extremos del mecanismo: quien lanza detecta el problema, quien captura lo resuelve.
+
+2. ¿Qué función tiene try?
+
+Delimita el bloque de código que se vigila. Todo lo que se ejecuta dentro queda bajo observación, de modo que si se produce una excepción, el flujo se desvía hacia los bloques catch asociados en lugar de terminar el programa.
+
+3. ¿Qué función tiene catch?
+
+Define el tratamiento para un tipo específico de excepción. Recibe el objeto lanzado como parámetro, lo que permite consultar su mensaje y su origen, y contiene el código de recuperación: informar al usuario, registrar el error, asignar un valor por defecto o descartar el dato y continuar.
+
+4. ¿Cuándo resulta útil finally?
+
+Cuando existe código que debe ejecutarse sin importar el resultado del try, típicamente la liberación de recursos: cerrar archivos, conexiones de red o de base de datos. Se ejecuta tanto si el bloque termina con éxito como si se produjo una excepción, e incluso cuando hay un return de por medio.
+
+5. ¿Qué ventaja tiene try-with-resources?
+
+Cierra automáticamente los recursos que implementan AutoCloseable al salir del bloque, eliminando la necesidad del finally manual con su comprobación de nulos y su try-catch anidado. Reduce el código, evita las fugas de recursos por olvido y conserva la excepción original cuando el cierre también falla, registrando esta última como suppressed.
+
+6. ¿Cuál es la diferencia entre throw y throws?
+
+throw es una instrucción que lanza efectivamente una excepción en un punto concreto del código; requiere un objeto Throwable. throws es una cláusula en la firma del método que declara qué excepciones puede propagar hacia quien lo invoca. Uno ejecuta la acción, el otro anuncia la posibilidad.
+
+7. ¿Por qué conviene utilizar excepciones específicas?
+
+Porque permiten distinguir qué falló exactamente y responder de forma distinta a cada situación. En esta solución, un dato no numérico y una calificación fuera de rango son problemas diferentes que merecen mensajes diferentes. Capturar un tipo genérico borra esa distinción y, además, atrapa errores no previstos que deberían propagarse.
+
+8. ¿Cuándo tiene sentido crear una excepción personalizada?
+
+Cuando el problema pertenece al dominio de la aplicación y ninguna excepción estándar lo representa con precisión. CalificacionInvalidaException expresa una regla del negocio —el rango 0 a 100— que ninguna clase de la biblioteca estándar conoce. Además, contar con un tipo propio permite capturarla de forma selectiva sin confundirla con otros errores.
+
+9. ¿Por qué no se recomienda capturar Throwable?
+
+Porque es la raíz de toda la jerarquía e incluye la rama Error, con fallos de la máquina virtual como OutOfMemoryError o StackOverflowError, de los que una aplicación no puede recuperarse. Capturarlos deja al programa operando sobre una JVM en estado comprometido y oculta el problema real, que reaparecerá después en un lugar sin relación aparente con su origen.
+
+10. ¿Qué efecto tiene ignorar una excepción?
+
+El error desaparece sin dejar rastro y el programa continúa como si nada hubiera ocurrido, produciendo resultados incorrectos de forma silenciosa. Es peor que un fallo visible, porque este último al menos indica dónde y cuándo se produjo. Un catch vacío convierte un problema diagnosticable en uno invisible.
+11. ¿Qué información debería proporcionar un buen mensaje de excepción?
+
+Qué ocurrió, con qué dato concreto y, cuando sea posible, qué se esperaba. El mensaje "Calificación fuera de rango: 110" cumple los tres criterios: identifica el problema, incluye el valor rechazado e implica la regla incumplida. Debe ser comprensible para quien lo lea sin acceso al código, y no exponer detalles internos de la implementación.
+12. ¿En qué casos conviene propagar una excepción en lugar de capturarla inmediatamente?
+Cuando el método donde ocurre no dispone de la información necesaria para decidir qué hacer. calcularPromedio() sabe leer archivos, pero no si ante uno inexistente conviene mostrar un mensaje, solicitar otra ruta o terminar el programa: esa decisión corresponde al nivel superior. En cambio, los errores de validación sí se capturan dentro del ciclo, porque ahí sí se sabe la respuesta adecuada, que es descartar la línea y continuar.
 ---
 
 # **22\. Criterios de evaluación**
