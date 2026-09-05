@@ -9,12 +9,12 @@ public class ProcesadorCalificaciones {
 
     public static void main(String[] args) {
 
-        BufferedReader lector = null;
-
-        try {
-            lector = new BufferedReader(
-                    new FileReader("calificaciones.txt")
-            );
+        try (
+                BufferedReader lector =
+                        new BufferedReader(
+                                new FileReader("calificaciones.txt")
+                        )
+        ) {
 
             String linea;
 
@@ -44,20 +44,8 @@ public class ProcesadorCalificaciones {
 
         } catch (IOException e) {
             System.err.println(
-                    "Error de entrada/salida: " + e.getMessage()
+                    "Error al leer el archivo: " + e.getMessage()
             );
-
-        } finally {
-            if (lector != null) {
-                try {
-                    lector.close();
-                    System.out.println("Archivo cerrado correctamente.");
-                } catch (IOException e) {
-                    System.err.println("No fue posible cerrar el archivo.");
-                }
-            } else {
-                System.out.println("No había archivo que cerrar.");
-            }
         }
     }
 

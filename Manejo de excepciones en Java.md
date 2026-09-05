@@ -310,8 +310,11 @@ try (
 Responder:
 
 * ¿Qué código desapareció?  
+  Desapareció todo el bloque finally, que en la versión anterior ocupaba alrededor de diez líneas: la comprobación if (lector != null), la llamada a lector.close() y el try-catch anidado que la envolvía para atender la posible IOException del cierre. También desapareció la declaración previa BufferedReader lector = null;, ya que la variable ahora se declara dentro de los paréntesis del try. En conjunto, se eliminó el código dedicado a la gestión del recurso y permaneció únicamente el que resuelve el problema.
 * ¿Quién cierra ahora el archivo?  
+  Lo cierra la máquina virtual de Java de manera automática. Cualquier recurso declarado en los paréntesis del try debe implementar la interfaz AutoCloseable; BufferedReader la implementa, por lo que el compilador genera el llamado a close() y lo ejecuta al salir del bloque, ya sea por terminación normal o por una excepción. El cierre ocurre incluso antes de que se evalúen los bloques catch. Además, si tanto el procesamiento como el cierre fallan, la excepción del cierre se registra como suppressed y se conserva la original, en lugar de perderse como sucedía con el enfoque manual.
 * ¿Qué versión resulta más clara?
+  La versión con try-with-resources. La diferencia no es solamente de extensión: el finally manual exige recordar tres detalles fáciles de omitir —declarar la variable fuera del try, verificar que no sea null y capturar la excepción que puede lanzar el propio close()—. Cada uno de ellos es una fuente potencial de errores, y olvidar el cierre provoca fugas de recursos que no se manifiestan de inmediato.
 
 ---
 
