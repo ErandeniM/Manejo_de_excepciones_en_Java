@@ -9,10 +9,29 @@ public class ProcesadorCalificaciones {
 
     public static void main(String[] args) {
 
+        try {
+
+            procesarArchivo("calificaciones.txt");
+
+        } catch (FileNotFoundException e) {
+
+            System.err.println("No se encontró el archivo.");
+
+        } catch (IOException e) {
+
+            System.err.println(
+                    "No fue posible procesar el archivo: " + e.getMessage()
+            );
+        }
+    }
+
+    public static void procesarArchivo(String nombreArchivo)
+            throws IOException {
+
         try (
                 BufferedReader lector =
                         new BufferedReader(
-                                new FileReader("calificaciones.txt")
+                                new FileReader(nombreArchivo)
                         )
         ) {
 
@@ -21,6 +40,9 @@ public class ProcesadorCalificaciones {
             while ((linea = lector.readLine()) != null) {
 
                 try {
+
+                    validarLinea(linea);
+
                     int calificacion = Integer.parseInt(linea.trim());
 
                     validarCalificacion(calificacion);
@@ -28,31 +50,44 @@ public class ProcesadorCalificaciones {
                     System.out.println("Calificación válida: " + calificacion);
 
                 } catch (NumberFormatException e) {
+
                     System.err.println(
                             "Formato numérico inválido: " + e.getMessage()
                     );
 
                 } catch (IllegalArgumentException e) {
+
                     System.err.println(
                             "Argumento inválido: " + e.getMessage()
                     );
                 }
             }
+        }
+    }
 
-        } catch (FileNotFoundException e) {
-            System.err.println("No se encontró el archivo.");
+    public static void validarLinea(String linea) {
 
-        } catch (IOException e) {
-            System.err.println(
-                    "Error al leer el archivo: " + e.getMessage()
+        if (linea.isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "La línea no puede estar vacía."
             );
         }
     }
 
     public static void validarCalificacion(int calificacion) {
-        if (calificacion < 0 || calificacion > 100) {
+
+        if (calificacion < 0) {
+
             throw new IllegalArgumentException(
-                    "La calificación debe estar entre 0 y 100: " + calificacion
+                    "La calificación no puede ser negativa: " + calificacion
+            );
+        }
+
+        if (calificacion > 100) {
+
+            throw new IllegalArgumentException(
+                    "La calificación no puede exceder 100: " + calificacion
             );
         }
     }
