@@ -55,6 +55,12 @@ public class ProcesadorCalificaciones {
                             "Formato numérico inválido: " + e.getMessage()
                     );
 
+                } catch (CalificacionInvalidaException e) {
+
+                    System.err.println(
+                            "Error en los datos: " + e.getMessage()
+                    );
+
                 } catch (IllegalArgumentException e) {
 
                     System.err.println(
@@ -75,19 +81,13 @@ public class ProcesadorCalificaciones {
         }
     }
 
-    public static void validarCalificacion(int calificacion) {
+    public static void validarCalificacion(int calificacion)
+            throws CalificacionInvalidaException {
 
-        if (calificacion < 0) {
+        if (calificacion < 0 || calificacion > 100) {
 
-            throw new IllegalArgumentException(
-                    "La calificación no puede ser negativa: " + calificacion
-            );
-        }
-
-        if (calificacion > 100) {
-
-            throw new IllegalArgumentException(
-                    "La calificación no puede exceder 100: " + calificacion
+            throw new CalificacionInvalidaException(
+                    "Calificación fuera de rango: " + calificacion
             );
         }
     }
