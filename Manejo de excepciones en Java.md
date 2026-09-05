@@ -662,16 +662,16 @@ Agregar Javadoc a:
 
 Antes de entregar, revisar:
 
-| Buena práctica | Cumple |
-| ----- | ----- |
-| Utiliza excepciones específicas | ☐ |
-| No captura `Throwable` | ☐ |
-| No ignora excepciones | ☐ |
-| Usa mensajes descriptivos | ☐ |
-| Captura primero excepciones específicas | ☐ |
-| Utiliza `try-with-resources` | ☐ |
-| Documenta `throws` | ☐ |
-| No utiliza `throws Exception` sin necesidad | ☐ |
+| Buena práctica | Cumple | Evidencia en la solución |
+| --- | --- | --- |
+| Utiliza excepciones específicas | ☑ | Se emplean `NumberFormatException`, `FileNotFoundException`, `IllegalArgumentException` y `CalificacionInvalidaException`, cada una para una condición distinta |
+| No captura `Throwable` | ☑ | Ningún `catch` declara `Throwable` ni `Error`; la excepción más general capturada es `IOException` |
+| No ignora excepciones | ☑ | Todos los bloques `catch` emiten un mensaje; ninguno queda vacío |
+| Usa mensajes descriptivos | ☑ | Los mensajes indican la causa y el dato que la provocó, por ejemplo "Calificación fuera de rango: 110" |
+| Captura primero excepciones específicas | ☑ | `FileNotFoundException` precede a `IOException`, y `NumberFormatException` precede a `IllegalArgumentException` |
+| Utiliza `try-with-resources` | ☑ | El `BufferedReader` se declara en los paréntesis del `try` dentro de `calcularPromedio()` |
+| Documenta `throws` | ☑ | `calcularPromedio()` y `validarCalificacion()` incluyen la etiqueta `@throws` en su Javadoc |
+| No utiliza `throws Exception` sin necesidad | ☑ | Las firmas declaran únicamente `IOException` y `CalificacionInvalidaException` |
 
 El material también advierte contra registrar una excepción y volver a lanzarla innecesariamente, pues puede producir múltiples mensajes para el mismo problema; cuando se requiere agregar contexto, propone envolver la excepción preservando la causa original.
 
