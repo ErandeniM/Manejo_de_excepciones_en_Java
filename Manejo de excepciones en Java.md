@@ -268,7 +268,12 @@ Probar:
 * contenido inválido.
 
 ¿En qué situaciones se ejecuta `finally`?
-
+El bloque finally se ejecuta siempre que el flujo haya entrado al bloque try, sin importar la manera en que se salga de él. Es la garantía que ofrece el lenguaje para liberar recursos.
+| Escenario | ¿Se ejecuta `finally`? | Comportamiento observado |
+| --- | --- | --- |
+| Archivo correcto | Sí | El `try` concluye sin errores; `lector` tiene un valor asignado y el archivo se cierra |
+| Archivo inexistente | Sí | Falla la creación del `FileReader`, se atiende el `catch` y aun así `finally` se ejecuta; `lector` permanece en `null` |
+| Contenido inválido | Sí | La excepción se maneja dentro del ciclo, el `try` externo termina normalmente y el archivo se cierra |
 
 # **Parte V. `try-with-resources`**
 
